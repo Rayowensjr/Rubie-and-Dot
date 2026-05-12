@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubie & Dot — Business Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:#F9EEF3;font-family:'DM Sans','Helvetica Neue',sans-serif;color:#3A2448}
+  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#C4ADDF;border-radius:4px}
+  header{background:#7A5FAA;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(100,60,130,0.25)}
+  .logo{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#fff}
+  .logo span{color:#C4ADDF}.dot{display:inline-block;width:11px;height:11px;background:#E8A4BE;border-radius:50%;vertical-align:middle;margin:0 1px -1px}
+  .hdate{font-size:12px;color:#C4ADDF}
+  nav{background:#fff;border-bottom:1px solid #F2E4EE;display:flex;padding:0 20px;overflow-x:auto}
+  nav button{padding:13px 18px;border:none;background:none;font-size:14px;cursor:pointer;font-family:inherit;border-bottom:2.5px solid transparent;display:flex;align-items:center;gap:6px;white-space:nowrap;color:#9E80AE;font-weight:500;transition:color .15s}
+  nav button.active{color:#9B7EC8;font-weight:700;border-bottom-color:#9B7EC8}
+  main{max-width:1100px;margin:0 auto;padding:28px 22px}
+  .page{display:none}.page.active{display:block}
+  h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;margin-bottom:4px}
+  .subtitle{color:#9E80AE;font-size:14px;margin-bottom:22px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:28px}
+  .card{background:#fff;border-radius:16px;padding:20px 18px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2}
+  .card-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+  .card-value{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+  .card-sub{font-size:12px;color:#9E80AE}
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .panel{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  .panel h3{font-family:'Playfair Display',Georgia,serif;font-size:15px;margin-bottom:14px;color:#3A2448}
+  .panel-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #F2E4EE}
+  .panel-row:last-child{border-bottom:none}
+  .row-a{font-weight:600;font-size:13px}.row-b{font-size:12px;color:#9E80AE}
+  .row-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .amount-green{font-weight:700;color:#7AAE8E;font-size:13px}
+  .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .btn{background:#9B7EC8;color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;transition:opacity .15s}
+  .btn:hover{opacity:.85}.btn.ghost{background:transparent;color:#6B4F7A;border:1.5px solid #F2E4EE}
+  .btn.small{padding:6px 13px;font-size:12px}
+  .table-wrap{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  table{width:100%;border-collapse:collapse}
+  thead{background:#F5D0E2}
+  th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B4F7A;letter-spacing:.5px;text-transform:uppercase}
+  td{padding:12px 16px;font-size:14px}
+  tr.even{background:#FDF5F9}
+  tfoot tr{background:#F5D0E2}
+  tfoot td{padding:12px 16px;font-weight:700;color:#6B4F7A}
+  .badge{display:inline-block;padding:3px 11px;border-radius:20px;font-size:12px;font-weight:700}
+  .badge-paid{background:#E8F5EE;color:#3A7D52}
+  .badge-pending{background:#FFF0F7;color:#C97898}
+  .badge-inprogress{background:#EDE8F8;color:#7A5FAA}
+  .badge-awaiting{background:#FDE8EC;color:#A83050}
+  .badge-complete{background:#E8F5EE;color:#3A7D52}
+  .badge-shipped{background:#EDE8F8;color:#7A5FAA}
+  .cat-pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .cat-pill{background:#fff;border-radius:12px;padding:10px 16px;box-shadow:0 2px 10px rgba(100,60,130,0.10)}
+  .cat-pill-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase}
+  .cat-pill-val{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:#C97898}
+  .customer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .cust-card{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2;position:relative}
+  .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#E8A4BE);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;margin-bottom:12px}
+  .cust-name{font-weight:700;font-size:15px;margin-bottom:3px}
+  .cust-info{font-size:13px;color:#9E80AE;margin-bottom:2px}
+  .cust-note{background:#F5D0E2;border-radius:10px;padding:7px 11px;font-size:13px;color:#7A5FAA;margin-bottom:12px;font-style:italic}
+  .cust-stats{display:flex;gap:18px}
+  .stat-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase}
+  .stat-val-purple{font-weight:700;color:#9B7EC8;font-size:18px}
+  .stat-val-green{font-weight:700;color:#7AAE8E;font-size:18px}
+  .order-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .order-card{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  .order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .order-customer{font-weight:700;font-size:15px}
+  .order-item{font-size:13px;color:#6B4F7A;margin-bottom:6px}
+  .order-due{font-size:12px;color:#9E80AE;margin-bottom:10px}
+  .order-note{background:#F5D0E2;border-radius:10px;padding:7px 11px;font-size:12px;color:#7A5FAA;margin-bottom:12px;font-style:italic}
+  .order-actions{display:flex;gap:8px;align-items:center}
+  .order-actions select{flex:1;padding:6px 10px;border-radius:10px;border:1.5px solid #F2E4EE;font-size:12px;font-family:inherit;color:#3A2448;background:#fff;cursor:pointer}
+  .del-btn{background:none;border:none;cursor:pointer;color:#9E80AE;font-size:16px;line-height:1}
+  .abs-del{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:#9E80AE;font-size:14px}
+
+  /* Modal */
+  .overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(58,36,72,.35);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#FDF5F9;border-radius:20px;padding:30px 34px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(100,60,130,.2);border:1px solid #F2E4EE}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+  .modal-title{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:#3A2448}
+  .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#9E80AE;line-height:1}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12px;font-weight:700;color:#6B4F7A;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+  .field input,.field select,.field textarea{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #F2E4EE;background:#fff;font-size:14px;color:#3A2448;font-family:inherit;outline:none}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:#9B7EC8;box-shadow:0 0 0 3px rgba(155,126,200,.18)}
+  .field textarea{height:75px;resize:vertical}
+  .modal-btns{display:flex;gap:10px;margin-top:6px}
+  .td-del{background:none;border:none;cursor:pointer;color:#9E80AE;font-size:16px}
+  .cat-tag{background:#F5D0E2;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:700;color:#C97898}
+  /* Mobile sale/spend cards */
+  .mob-list{display:none;flex-direction:column;gap:10px}
+  .mob-card{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2}
+  .mob-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+  .mob-card-name{font-weight:700;font-size:14px;color:#3A2448}
+  .mob-card-amount{font-weight:700;font-size:16px}
+  .mob-card-item{font-size:13px;color:#6B4F7A;margin-bottom:6px}
+  .mob-card-bottom{display:flex;justify-content:space-between;align-items:center}
+  .mob-card-date{font-size:12px;color:#9E80AE}
+  .mob-total{background:#F5D0E2;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .mob-total-label{font-weight:700;color:#6B4F7A;font-size:14px}
+  .mob-total-val{font-weight:700;font-size:16px}
+  @media(max-width:700px){
+    .panels{grid-template-columns:1fr}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .table-wrap{display:none}
+    .mob-list{display:flex}
+    main{padding:16px 14px}
+    .page-header{gap:10px}
+    .modal{padding:22px 18px}
+    h2{font-size:20px}
+    .hdate{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Rubie <span>&amp;</span> D<span class="dot"></span>t</div>
+  <div class="hdate" id="hdate"></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('dashboard',this)">◈ Dashboard</button>
+  <button onclick="showTab('sales',this)">↑ Sales</button>
+  <button onclick="showTab('spends',this)">↓ Spends</button>
+  <button onclick="showTab('customers',this)">♡ Customers</button>
+  <button onclick="showTab('orders',this)">◎ Orders</button>
+</nav>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <h2>Good day! 🌸</h2>
+    <p class="subtitle">Here's how your studio is doing.</p>
+    <div class="cards" id="dash-cards"></div>
+    <div class="panels">
+      <div class="panel"><h3>Recent Sales</h3><div id="dash-sales"></div></div>
+      <div class="panel"><h3>Active Orders</h3><div id="dash-orders"></div></div>
+    </div>
+  </div>
+
+  <!-- SALES -->
+  <div id="page-sales" class="page">
+    <div class="page-header">
+      <h2>Sales Income</h2>
+      <button class="btn" onclick="openModal('sale')">+ New Sale</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Date</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+      <tbody id="sales-body"></tbody>
+      <tfoot><tr><td colspan="3">Total Paid</td><td id="sales-total" style="color:#7AAE8E;font-size:16px"></td><td colspan="2"></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="mob-list" id="sales-mob"></div>
+  </div>
+
+  <!-- SPENDS -->
+  <div id="page-spends" class="page">
+    <div class="page-header">
+      <h2>Outgoing Spends</h2>
+      <button class="btn" onclick="openModal('spend')">+ Add Spend</button>
+    </div>
+    <div class="cat-pills" id="cat-pills"></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="spends-body"></tbody>
+      <tfoot><tr><td colspan="3">Total Spent</td><td id="spends-total" style="color:#C97898;font-size:16px"></td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="mob-list" id="spends-mob"></div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div id="page-customers" class="page">
+    <div class="page-header">
+      <h2>Customers</h2>
+      <button class="btn" onclick="openModal('customer')">+ Add Customer</button>
+    </div>
+    <div class="customer-grid" id="customer-grid"></div>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="page-orders" class="page">
+    <div class="page-header">
+      <h2>Orders</h2>
+      <button class="btn" onclick="openModal('order')">+ New Order</button>
+    </div>
+    <div class="order-grid" id="order-grid"></div>
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">Add</div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────
+let data = {
+  sales: [
+    {id:1,date:"2025-05-01",customer:"Emma Walsh",item:"Wildflower Print A3",amount:45,status:"paid"},
+    {id:2,date:"2025-05-03",customer:"Claire Doyle",item:"Custom Portrait",amount:180,status:"paid"},
+    {id:3,date:"2025-05-07",customer:"Sarah Brennan",item:"Botanical Set x3",amount:95,status:"pending"}
+  ],
+  spends: [
+    {id:1,date:"2025-05-02",category:"Materials",description:"Watercolour paper & pigments",amount:67},
+    {id:2,date:"2025-05-05",category:"Packaging",description:"Tissue, boxes, ribbon",amount:38},
+    {id:3,date:"2025-05-08",category:"Postage",description:"Tracked shipping x4",amount:24}
+  ],
+  customers: [
+    {id:1,name:"Emma Walsh",email:"emma@example.com",phone:"087 111 2222",orders:3,totalSpend:155,notes:"Loves botanicals"},
+    {id:2,name:"Claire Doyle",email:"claire@example.com",phone:"086 333 4444",orders:1,totalSpend:180,notes:"Commissioned portrait"},
+    {id:3,name:"Sarah Brennan",email:"sarah@example.com",phone:"085 555 6666",orders:2,totalSpend:95,notes:"Instagram enquiry"}
+  ],
+  orders: [
+    {id:1,customer:"Sarah Brennan",item:"Botanical Set x3",dueDate:"2025-05-15",status:"in-progress",notes:"A4 size, no frame"},
+    {id:2,customer:"Rachel Foley",item:"Wedding Gift Print",dueDate:"2025-05-20",status:"pending",notes:"Names + date to include"},
+    {id:3,customer:"Kate Murphy",item:"Kids Room Illustration",dueDate:"2025-05-28",status:"awaiting-payment",notes:"Unicorn theme, pastel"}
+  ]
+};
+
+const SPEND_CATS = ["Materials","Packaging","Postage","Marketing","Equipment","Fees","Other"];
+const ORDER_STATUSES = ["pending","in-progress","awaiting-payment","complete","shipped"];
+
+function statusInfo(s){
+  const m={
+    "paid":{cls:"badge-paid",label:"Paid"},
+    "pending":{cls:"badge-pending",label:"Pending"},
+    "in-progress":{cls:"badge-inprogress",label:"In Progress"},
+    "awaiting-payment":{cls:"badge-awaiting",label:"Awaiting Payment"},
+    "complete":{cls:"badge-complete",label:"Complete"},
+    "shipped":{cls:"badge-shipped",label:"Shipped"}
+  };
+  return m[s]||{cls:"badge-pending",label:s};
+}
+function badge(s){const i=statusInfo(s);return`<span class="badge ${i.cls}">${i.label}</span>`;}
+function borderColor(s){return s==="complete"||s==="shipped"?"#7AAE8E":s==="awaiting-payment"?"#C97898":"#9B7EC8";}
+function euro(n){return"€"+(+n).toFixed(2);}
+function initials(name){return name.split(" ").map(n=>n[0]).join("");}
+
+// ─── DATE ───────────────────────────────────────────────────
+document.getElementById("hdate").textContent=new Date().toLocaleDateString("en-IE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+// ─── TABS ───────────────────────────────────────────────────
+function showTab(id,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  btn.classList.add("active");
+  render();
+}
+
+// ─── RENDER ─────────────────────────────────────────────────
+function render(){renderDash();renderSales();renderSpends();renderCustomers();renderOrders();}
+
+function renderDash(){
+  const paid=data.sales.filter(s=>s.status==="paid");
+  const ts=paid.reduce((a,s)=>a+s.amount,0);
+  const te=data.spends.reduce((a,s)=>a+s.amount,0);
+  const profit=ts-te;
+  const po=data.orders.filter(o=>o.status!=="complete"&&o.status!=="shipped").length;
+  const cards=[
+    {label:"Total Sales",value:euro(ts),color:"#7AAE8E",sub:paid.length+" paid"},
+    {label:"Total Spends",value:euro(te),color:"#C97898",sub:data.spends.length+" expenses"},
+    {label:"Net Profit",value:euro(profit),color:profit>=0?"#9B7EC8":"#C44A4A",sub:profit>=0?"In profit 🎉":"Watch costs"},
+    {label:"Pending Orders",value:po,color:"#C9A84C",sub:data.orders.length+" total"},
+    {label:"Customers",value:data.customers.length,color:"#C97898",sub:"in your studio"}
+  ];
+  document.getElementById("dash-cards").innerHTML=cards.map(c=>`
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value" style="color:${c.color}">${c.value}</div>
+      <div class="card-sub">${c.sub}</div>
+    </div>`).join("");
+
+  document.getElementById("dash-sales").innerHTML=data.sales.slice(0,4).map(s=>`
+    <div class="panel-row">
+      <div><div class="row-a">${s.customer}</div><div class="row-b">${s.item}</div></div>
+      <div class="row-right"><span class="amount-green">${euro(s.amount)}</span>${badge(s.status)}</div>
+    </div>`).join("");
+
+  document.getElementById("dash-orders").innerHTML=data.orders.filter(o=>o.status!=="complete").slice(0,4).map(o=>`
+    <div class="panel-row">
+      <div><div class="row-a">${o.customer}</div><div class="row-b">${o.item} · Due ${o.dueDate}</div></div>
+      <div class="row-right">${badge(o.status)}</div>
+    </div>`).join("");
+}
+
+function renderSales(){
+  const paid=data.sales.filter(s=>s.status==="paid").reduce((a,s)=>a+s.amount,0);
+  document.getElementById("sales-body").innerHTML=data.sales.map((s,i)=>`
+    <tr class="${i%2===1?"even":""}">
+      <td style="color:#9E80AE;font-size:13px">${s.date}</td>
+      <td style="font-weight:600">${s.customer}</td>
+      <td>${s.item}</td>
+      <td style="font-weight:700;color:#7AAE8E">${euro(s.amount)}</td>
+      <td>${badge(s.status)}</td>
+      <td><button class="td-del" onclick="del('sales',${s.id})">🗑</button></td>
+    </tr>`).join("");
+  document.getElementById("sales-total").textContent=euro(paid);
+  document.getElementById("sales-mob").innerHTML=data.sales.map(s=>`
+    <div class="mob-card">
+      <div class="mob-card-top">
+        <div class="mob-card-name">${s.customer}</div>
+        <div class="mob-card-amount" style="color:#7AAE8E">${euro(s.amount)}</div>
+      </div>
+      <div class="mob-card-item">${s.item}</div>
+      <div class="mob-card-bottom">
+        <div class="mob-card-date">${s.date}</div>
+        <div style="display:flex;align-items:center;gap:8px">${badge(s.status)}<button class="td-del" onclick="del('sales',${s.id})">🗑</button></div>
+      </div>
+    </div>`).join("")+`
+    <div class="mob-total">
+      <span class="mob-total-label">Total Paid</span>
+      <span class="mob-total-val" style="color:#7AAE8E">${euro(paid)}</span>
+    </div>`;
+}
+
+function renderSpends(){
+  const cats=SPEND_CATS.filter(c=>data.spends.some(s=>s.category===c));
+  document.getElementById("cat-pills").innerHTML=cats.map(c=>{
+    const tot=data.spends.filter(s=>s.category===c).reduce((a,s)=>a+s.amount,0);
+    return`<div class="cat-pill"><div class="cat-pill-label">${c}</div><div class="cat-pill-val">${euro(tot)}</div></div>`;
+  }).join("");
+  const te=data.spends.reduce((a,s)=>a+s.amount,0);
+  document.getElementById("spends-body").innerHTML=data.spends.map((s,i)=>`
+    <tr class="${i%2===1?"even":""}">
+      <td style="color:#9E80AE;font-size:13px">${s.date}</td>
+      <td><span class="cat-tag">${s.category}</span></td>
+      <td>${s.description}</td>
+      <td style="font-weight:700;color:#C97898">${euro(s.amount)}</td>
+      <td><button class="td-del" onclick="del('spends',${s.id})">🗑</button></td>
+    </tr>`).join("");
+  document.getElementById("spends-total").textContent=euro(te);
+  document.getElementById("spends-mob").innerHTML=data.spends.map(s=>`
+    <div class="mob-card">
+      <div class="mob-card-top">
+        <div class="mob-card-name">${s.description||s.category}</div>
+        <div class="mob-card-amount" style="color:#C97898">${euro(s.amount)}</div>
+      </div>
+      <div class="mob-card-item"><span class="cat-tag">${s.category}</span></div>
+      <div class="mob-card-bottom" style="margin-top:8px">
+        <div class="mob-card-date">${s.date}</div>
+        <button class="td-del" onclick="del('spends',${s.id})">🗑</button>
+      </div>
+    </div>`).join("")+`
+    <div class="mob-total">
+      <span class="mob-total-label">Total Spent</span>
+      <span class="mob-total-val" style="color:#C97898">${euro(te)}</span>
+    </div>`;
+}
+
+function renderCustomers(){
+  document.getElementById("customer-grid").innerHTML=data.customers.map(c=>`
+    <div class="cust-card">
+      <button class="abs-del" onclick="del('customers',${c.id})">🗑</button>
+      <div class="avatar">${initials(c.name)}</div>
+      <div class="cust-name">${c.name}</div>
+      <div class="cust-info">${c.email}</div>
+      <div class="cust-info" style="margin-bottom:10px">${c.phone}</div>
+      ${c.notes?`<div class="cust-note">"${c.notes}"</div>`:""}
+      <div class="cust-stats">
+        <div><div class="stat-label">Orders</div><div class="stat-val-purple">${c.orders}</div></div>
+        <div><div class="stat-label">Spent</div><div class="stat-val-green">${euro(c.totalSpend)}</div></div>
+      </div>
+    </div>`).join("");
+}
+
+function renderOrders(){
+  document.getElementById("order-grid").innerHTML=data.orders.map(o=>`
+    <div class="order-card" style="border-left:5px solid ${borderColor(o.status)}">
+      <div class="order-top"><div class="order-customer">${o.customer}</div>${badge(o.status)}</div>
+      <div class="order-item">${o.item}</div>
+      <div class="order-due">📅 Due: ${o.dueDate}</div>
+      ${o.notes?`<div class="order-note">${o.notes}</div>`:""}
+      <div class="order-actions">
+        <button class="btn ghost small" onclick="editOrder(${o.id})">Edit</button>
+        <select onchange="updateOrderStatus(${o.id},this.value)">
+          ${ORDER_STATUSES.map(s=>`<option value="${s}"${s===o.status?" selected":""}>${statusInfo(s).label}</option>`).join("")}
+        </select>
+        <button class="del-btn" onclick="del('orders',${o.id})">🗑</button>
+      </div>
+    </div>`).join("");
+}
+
+function del(type,id){
+  data[type]=data[type].filter(x=>x.id!==id);
+  render();
+}
+function updateOrderStatus(id,val){
+  data.orders=data.orders.map(o=>o.id===id?{...o,status:val}:o);
+  render();
+}
+
+// ─── MODALS ─────────────────────────────────────────────────
+let editingOrderId=null;
+
+function openModal(type){
+  editingOrderId=null;
+  const overlay=document.getElementById("modal-overlay");
+  const title=document.getElementById("modal-title");
+  const body=document.getElementById("modal-body");
+  overlay.classList.add("open");
+  if(type==="sale"){
+    title.textContent="Record a Sale";
+    body.innerHTML=`
+      <div class="field"><label>Date</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Customer</label><input id="f-customer" placeholder="e.g. Emma Walsh"></div>
+      <div class="field"><label>Item / Description</label><input id="f-item" placeholder="e.g. Wildflower Print A3"></div>
+      <div class="field"><label>Amount (€)</label><input type="number" id="f-amount" placeholder="0.00"></div>
+      <div class="field"><label>Status</label><select id="f-status"><option value="pending">Pending</option><option value="paid">Paid</option></select></div>
+      <div class="modal-btns"><button class="btn" onclick="saveSale()">Save Sale</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="spend"){
+    title.textContent="Record a Spend";
+    body.innerHTML=`
+      <div class="field"><label>Date</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Category</label><select id="f-cat"><option value="">Select…</option>${SPEND_CATS.map(c=>`<option>${c}</option>`).join("")}</select></div>
+      <div class="field"><label>Description</label><input id="f-desc" placeholder="e.g. Watercolour paper"></div>
+      <div class="field"><label>Amount (€)</label><input type="number" id="f-amount" placeholder="0.00"></div>
+      <div class="modal-btns"><button class="btn" onclick="saveSpend()">Save Spend</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="customer"){
+    title.textContent="Add Customer";
+    body.innerHTML=`
+      <div class="field"><label>Full Name</label><input id="f-name" placeholder="e.g. Emma Walsh"></div>
+      <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="email@example.com"></div>
+      <div class="field"><label>Phone</label><input id="f-phone" placeholder="087 xxx xxxx"></div>
+      <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Preferences, source, etc."></textarea></div>
+      <div class="modal-btns"><button class="btn" onclick="saveCustomer()">Add Customer</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="order"){
+    title.textContent="New Order";
+    body.innerHTML=orderForm(null);
+  }
+}
+
+function editOrder(id){
+  const o=data.orders.find(x=>x.id===id);
+  editingOrderId=id;
+  document.getElementById("modal-title").textContent="Edit Order";
+  document.getElementById("modal-body").innerHTML=orderForm(o);
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function orderForm(o){
+  return`
+    <div class="field"><label>Customer</label><input id="f-customer" placeholder="e.g. Sarah Brennan" value="${o?o.customer:""}"></div>
+    <div class="field"><label>Item / Description</label><input id="f-item" placeholder="e.g. Custom Portrait" value="${o?o.item:""}"></div>
+    <div class="field"><label>Due Date</label><input type="date" id="f-due" value="${o?o.dueDate:""}"></div>
+    <div class="field"><label>Status</label><select id="f-status">${ORDER_STATUSES.map(s=>`<option value="${s}"${o&&o.status===s?" selected":""}>${statusInfo(s).label}</option>`).join("")}</select></div>
+    <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Size, frame, special requests…">${o?o.notes:""}</textarea></div>
+    <div class="modal-btns"><button class="btn" onclick="saveOrder()">${editingOrderId?"Save Changes":"Add Order"}</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+}
+
+function closeModal(){document.getElementById("modal-overlay").classList.remove("open");editingOrderId=null;}
+function g(id){return document.getElementById(id);}
+function gv(id){return g(id)?g(id).value:"";}
+
+function saveSale(){
+  if(!gv("f-customer")||!gv("f-amount"))return alert("Please fill in customer and amount.");
+  data.sales.unshift({id:Date.now(),date:gv("f-date"),customer:gv("f-customer"),item:gv("f-item"),amount:+gv("f-amount"),status:gv("f-status")||"pending"});
+  closeModal();render();
+}
+function saveSpend(){
+  if(!gv("f-cat")||!gv("f-amount"))return alert("Please fill in category and amount.");
+  data.spends.unshift({id:Date.now(),date:gv("f-date"),category:gv("f-cat"),description:gv("f-desc"),amount:+gv("f-amount")});
+  closeModal();render();
+}
+function saveCustomer(){
+  if(!gv("f-name"))return alert("Please enter a name.");
+  data.customers.unshift({id:Date.now(),name:gv("f-name"),email:gv("f-email"),phone:gv("f-phone"),orders:0,totalSpend:0,notes:gv("f-notes")});
+  closeModal();render();
+}
+function saveOrder(){
+  if(!gv("f-customer")||!gv("f-item"))return alert("Please fill in customer and item.");
+  const o={id:editingOrderId||Date.now(),customer:gv("f-customer"),item:gv("f-item"),dueDate:gv("f-due"),status:gv("f-status")||"pending",notes:gv("f-notes")};
+  if(editingOrderId){data.orders=data.orders.map(x=>x.id===editingOrderId?o:x);}
+  else{data.orders.unshift(o);}
+  closeModal();render();
+}
+
+render();
+</script>
+</body>
+</html>
