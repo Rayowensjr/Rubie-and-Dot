@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubie & Dot — Business Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:#F9EEF3;font-family:'DM Sans','Helvetica Neue',sans-serif;color:#3A2448}
+  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#C4ADDF;border-radius:4px}
+  header{background:#7A5FAA;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(100,60,130,0.25)}
+  .logo{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#fff}
+  .logo span{color:#C4ADDF}.dot{display:inline-block;width:11px;height:11px;background:#E8A4BE;border-radius:50%;vertical-align:middle;margin:0 1px -1px}
+  .hdate{font-size:12px;color:#C4ADDF}
+  nav{background:#fff;border-bottom:1px solid #F2E4EE;display:flex;padding:0 20px;overflow-x:auto}
+  nav button{padding:13px 18px;border:none;background:none;font-size:14px;cursor:pointer;font-family:inherit;border-bottom:2.5px solid transparent;display:flex;align-items:center;gap:6px;white-space:nowrap;color:#9E80AE;font-weight:500}
+  nav button.active{color:#9B7EC8;font-weight:700;border-bottom-color:#9B7EC8}
+  main{max-width:1100px;margin:0 auto;padding:28px 22px}
+  .page{display:none}.page.active{display:block}
+  h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;margin-bottom:4px}
+  .subtitle{color:#9E80AE;font-size:14px;margin-bottom:22px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:28px}
+  .card{background:#fff;border-radius:16px;padding:20px 18px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2}
+  .card-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+  .card-value{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+  .card-sub{font-size:12px;color:#9E80AE}
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .panel{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  .panel h3{font-family:'Playfair Display',Georgia,serif;font-size:15px;margin-bottom:14px;color:#3A2448}
+  .panel-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #F2E4EE}
+  .panel-row:last-child{border-bottom:none}
+  .row-a{font-weight:600;font-size:13px}.row-b{font-size:12px;color:#9E80AE}
+  .row-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .btn{background:#9B7EC8;color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+  .btn:hover{opacity:.85}.btn.ghost{background:transparent;color:#6B4F7A;border:1.5px solid #F2E4EE}
+  .btn.small{padding:6px 13px;font-size:12px}
+  .table-wrap{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  table{width:100%;border-collapse:collapse}
+  thead{background:#F5D0E2}
+  th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:#6B4F7A;letter-spacing:.5px;text-transform:uppercase}
+  td{padding:12px 16px;font-size:14px}
+  tr.even{background:#FDF5F9}
+  tfoot tr{background:#F5D0E2}
+  tfoot td{padding:12px 16px;font-weight:700;color:#6B4F7A}
+  .badge{display:inline-block;padding:3px 11px;border-radius:20px;font-size:12px;font-weight:700}
+  .badge-paid{background:#E8F5EE;color:#3A7D52}
+  .badge-pending{background:#FFF0F7;color:#C97898}
+  .badge-inprogress{background:#EDE8F8;color:#7A5FAA}
+  .badge-awaiting{background:#FDE8EC;color:#A83050}
+  .badge-complete{background:#E8F5EE;color:#3A7D52}
+  .badge-shipped{background:#EDE8F8;color:#7A5FAA}
+  .cat-pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .cat-pill{background:#fff;border-radius:12px;padding:10px 16px;box-shadow:0 2px 10px rgba(100,60,130,0.10)}
+  .cat-pill-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase}
+  .cat-pill-val{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:#C97898}
+  .customer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .cust-card{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2;position:relative}
+  .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#E8A4BE);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;margin-bottom:12px}
+  .cust-name{font-weight:700;font-size:15px;margin-bottom:3px}
+  .cust-info{font-size:13px;color:#9E80AE;margin-bottom:2px}
+  .cust-note{background:#F5D0E2;border-radius:10px;padding:7px 11px;font-size:13px;color:#7A5FAA;margin-bottom:12px;font-style:italic}
+  .cust-stats{display:flex;gap:18px}
+  .stat-label{font-size:11px;color:#9E80AE;font-weight:700;text-transform:uppercase}
+  .stat-val-purple{font-weight:700;color:#9B7EC8;font-size:18px}
+  .stat-val-green{font-weight:700;color:#7AAE8E;font-size:18px}
+  .order-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .order-card{background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 4px 18px rgba(100,60,130,0.10)}
+  .order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .order-customer{font-weight:700;font-size:15px}
+  .order-item{font-size:13px;color:#6B4F7A;margin-bottom:6px}
+  .order-due{font-size:12px;color:#9E80AE;margin-bottom:10px}
+  .order-note{background:#F5D0E2;border-radius:10px;padding:7px 11px;font-size:12px;color:#7A5FAA;margin-bottom:12px;font-style:italic}
+  .order-actions{display:flex;gap:8px;align-items:center}
+  .order-actions select{flex:1;padding:6px 10px;border-radius:10px;border:1.5px solid #F2E4EE;font-size:12px;font-family:inherit;color:#3A2448;background:#fff;cursor:pointer}
+  .abs-del{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:#9E80AE;font-size:14px}
+  .td-del{background:none;border:none;cursor:pointer;color:#9E80AE;font-size:16px}
+  .cat-tag{background:#F5D0E2;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:700;color:#C97898}
+  .overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(58,36,72,.35);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#FDF5F9;border-radius:20px;padding:30px 34px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(100,60,130,.2);border:1px solid #F2E4EE;max-height:90vh;overflow-y:auto}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+  .modal-title{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:#3A2448}
+  .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#9E80AE}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12px;font-weight:700;color:#6B4F7A;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+  .field input,.field select,.field textarea{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #F2E4EE;background:#fff;font-size:14px;color:#3A2448;font-family:inherit;outline:none}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:#9B7EC8;box-shadow:0 0 0 3px rgba(155,126,200,.18)}
+  .field textarea{height:75px;resize:vertical}
+  .modal-btns{display:flex;gap:10px;margin-top:6px}
+  .toast{position:fixed;bottom:20px;right:20px;background:#9B7EC8;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;z-index:200;display:none;box-shadow:0 4px 14px rgba(100,60,130,0.3)}
+  .toast.err{background:#C44A4A}
+  .spinner{text-align:center;padding:30px;color:#9E80AE;font-size:14px}
+  /* Mobile */
+  .mob-list{display:none;flex-direction:column;gap:10px}
+  .mob-card{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 4px 18px rgba(100,60,130,0.10);border:1px solid #F5D0E2}
+  .mob-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+  .mob-card-name{font-weight:700;font-size:14px}
+  .mob-card-amount{font-weight:700;font-size:16px}
+  .mob-card-item{font-size:13px;color:#6B4F7A;margin-bottom:6px}
+  .mob-card-bottom{display:flex;justify-content:space-between;align-items:center}
+  .mob-card-date{font-size:12px;color:#9E80AE}
+  .mob-total{background:#F5D0E2;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .mob-total-label{font-weight:700;color:#6B4F7A;font-size:14px}
+  .mob-total-val{font-weight:700;font-size:16px}
+  @media(max-width:700px){
+    .panels{grid-template-columns:1fr}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .table-wrap{display:none}
+    .mob-list{display:flex}
+    main{padding:16px 14px}
+    h2{font-size:20px}
+    .hdate{display:none}
+    .modal{padding:22px 18px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Rubie <span>&amp;</span> D<span class="dot"></span>t</div>
+  <div class="hdate" id="hdate"></div>
+</header>
+<nav>
+  <button class="active" onclick="showTab('dashboard',this)">◈ Dashboard</button>
+  <button onclick="showTab('sales',this)">↑ Sales</button>
+  <button onclick="showTab('spends',this)">↓ Spends</button>
+  <button onclick="showTab('customers',this)">♡ Customers</button>
+  <button onclick="showTab('orders',this)">◎ Orders</button>
+</nav>
+<div class="toast" id="toast"></div>
+<main>
+  <div id="page-dashboard" class="page active">
+    <h2>Good day! 🌸</h2>
+    <p class="subtitle">Here's how your studio is doing.</p>
+    <div class="cards" id="dash-cards"><div class="spinner">Loading…</div></div>
+    <div class="panels">
+      <div class="panel"><h3>Recent Sales</h3><div id="dash-sales"><div class="spinner">Loading…</div></div></div>
+      <div class="panel"><h3>Active Orders</h3><div id="dash-orders"><div class="spinner">Loading…</div></div></div>
+    </div>
+  </div>
+  <div id="page-sales" class="page">
+    <div class="page-header"><h2>Sales Income</h2><button class="btn" onclick="openModal('sale')">+ New Sale</button></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+      <tbody id="sales-body"><tr><td colspan="6" class="spinner">Loading…</td></tr></tbody>
+      <tfoot><tr><td colspan="3">Total Paid</td><td id="sales-total" style="color:#7AAE8E;font-size:16px">€0.00</td><td colspan="2"></td></tr></tfoot>
+    </table></div>
+    <div class="mob-list" id="sales-mob"></div>
+  </div>
+  <div id="page-spends" class="page">
+    <div class="page-header"><h2>Outgoing Spends</h2><button class="btn" onclick="openModal('spend')">+ Add Spend</button></div>
+    <div class="cat-pills" id="cat-pills"></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="spends-body"><tr><td colspan="5" class="spinner">Loading…</td></tr></tbody>
+      <tfoot><tr><td colspan="3">Total Spent</td><td id="spends-total" style="color:#C97898;font-size:16px">€0.00</td><td></td></tr></tfoot>
+    </table></div>
+    <div class="mob-list" id="spends-mob"></div>
+  </div>
+  <div id="page-customers" class="page">
+    <div class="page-header"><h2>Customers</h2><button class="btn" onclick="openModal('customer')">+ Add Customer</button></div>
+    <div class="customer-grid" id="customer-grid"><div class="spinner">Loading…</div></div>
+  </div>
+  <div id="page-orders" class="page">
+    <div class="page-header"><h2>Orders</h2><button class="btn" onclick="openModal('order')">+ New Order</button></div>
+    <div class="order-grid" id="order-grid"><div class="spinner">Loading…</div></div>
+  </div>
+</main>
+<div class="overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── FIREBASE REST API (no SDK — no CSP issues) ───────────────
+const DB = "https://rubie-and-dot-default-rtdb.europe-west1.firebasedatabase.app";
+
+async function fbGet(path){
+  const r = await fetch(`${DB}/${path}.json`);
+  return r.json();
+}
+async function fbPost(path, obj){
+  const r = await fetch(`${DB}/${path}.json`, {method:"POST", body:JSON.stringify(obj)});
+  return r.json();
+}
+async function fbPatch(path, obj){
+  await fetch(`${DB}/${path}.json`, {method:"PATCH", body:JSON.stringify(obj)});
+}
+async function fbDelete(path){
+  await fetch(`${DB}/${path}.json`, {method:"DELETE"});
+}
+
+// ── LOCAL STATE ──────────────────────────────────────────────
+let data = {sales:[], spends:[], customers:[], orders:[]};
+
+const SPEND_CATS = ["Materials","Packaging","Postage","Marketing","Equipment","Fees","Other"];
+const ORDER_STATUSES = ["pending","in-progress","awaiting-payment","complete","shipped"];
+
+// ── TOAST ────────────────────────────────────────────────────
+function toast(msg, err=false){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast"+(err?" err":"");
+  t.style.display = "block";
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.style.display="none", 2000);
+}
+
+// ── LOAD ALL DATA ────────────────────────────────────────────
+async function loadAll(){
+  try {
+    const [s,sp,c,o] = await Promise.all([
+      fbGet("sales"), fbGet("spends"), fbGet("customers"), fbGet("orders")
+    ]);
+    data.sales     = objToArr(s);
+    data.spends    = objToArr(sp);
+    data.customers = objToArr(c);
+    data.orders    = objToArr(o);
+    render();
+  } catch(e){
+    toast("Could not load data — check connection", true);
+  }
+}
+
+function objToArr(obj){
+  if(!obj) return [];
+  return Object.entries(obj).map(([k,v])=>({...v, _key:k}))
+    .sort((a,b)=>(b.id||0)-(a.id||0));
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function statusInfo(s){
+  const m={
+    "paid":{cls:"badge-paid",label:"Paid"},
+    "pending":{cls:"badge-pending",label:"Pending"},
+    "in-progress":{cls:"badge-inprogress",label:"In Progress"},
+    "awaiting-payment":{cls:"badge-awaiting",label:"Awaiting Payment"},
+    "complete":{cls:"badge-complete",label:"Complete"},
+    "shipped":{cls:"badge-shipped",label:"Shipped"}
+  };
+  return m[s]||{cls:"badge-pending",label:s};
+}
+function badge(s){const i=statusInfo(s);return`<span class="badge ${i.cls}">${i.label}</span>`;}
+function bc(s){return s==="complete"||s==="shipped"?"#7AAE8E":s==="awaiting-payment"?"#C97898":"#9B7EC8";}
+function euro(n){return"€"+(+n||0).toFixed(2);}
+function initials(n){return(n||"?").split(" ").map(x=>x[0]).join("").substring(0,2).toUpperCase();}
+function gv(id){const e=document.getElementById(id);return e?e.value:"";}
+
+document.getElementById("hdate").textContent = new Date().toLocaleDateString("en-IE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+// ── TABS ─────────────────────────────────────────────────────
+function showTab(id,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  btn.classList.add("active");
+}
+
+// ── RENDER ───────────────────────────────────────────────────
+function render(){renderDash();renderSales();renderSpends();renderCustomers();renderOrders();}
+
+function renderDash(){
+  const paid = data.sales.filter(s=>s.status==="paid");
+  const ts = paid.reduce((a,s)=>a+(+s.amount),0);
+  const te = data.spends.reduce((a,s)=>a+(+s.amount),0);
+  const profit = ts-te;
+  const po = data.orders.filter(o=>o.status!=="complete"&&o.status!=="shipped").length;
+  document.getElementById("dash-cards").innerHTML=[
+    {label:"Total Sales",    value:euro(ts),     color:"#7AAE8E", sub:paid.length+" paid"},
+    {label:"Total Spends",   value:euro(te),     color:"#C97898", sub:data.spends.length+" expenses"},
+    {label:"Net Profit",     value:euro(profit), color:profit>=0?"#9B7EC8":"#C44A4A", sub:profit>=0?"In profit 🎉":"Watch costs"},
+    {label:"Pending Orders", value:po,           color:"#C9A84C", sub:data.orders.length+" total"},
+    {label:"Customers",      value:data.customers.length, color:"#C97898", sub:"in your studio"}
+  ].map(c=>`<div class="card"><div class="card-label">${c.label}</div><div class="card-value" style="color:${c.color}">${c.value}</div><div class="card-sub">${c.sub}</div></div>`).join("");
+  document.getElementById("dash-sales").innerHTML = data.sales.slice(0,4).map(s=>`
+    <div class="panel-row">
+      <div><div class="row-a">${s.customer||""}</div><div class="row-b">${s.item||""}</div></div>
+      <div class="row-right"><span style="font-weight:700;color:#7AAE8E;font-size:13px">${euro(s.amount)}</span>${badge(s.status)}</div>
+    </div>`).join("") || '<p style="color:#9E80AE;font-size:13px;padding:8px 0">No sales yet</p>';
+  document.getElementById("dash-orders").innerHTML = data.orders.filter(o=>o.status!=="complete").slice(0,4).map(o=>`
+    <div class="panel-row">
+      <div><div class="row-a">${o.customer||""}</div><div class="row-b">${o.item||""} · Due ${o.dueDate||""}</div></div>
+      <div class="row-right">${badge(o.status)}</div>
+    </div>`).join("") || '<p style="color:#9E80AE;font-size:13px;padding:8px 0">No active orders</p>';
+}
+
+function renderSales(){
+  const paid = data.sales.filter(s=>s.status==="paid").reduce((a,s)=>a+(+s.amount),0);
+  document.getElementById("sales-body").innerHTML = data.sales.map((s,i)=>`
+    <tr class="${i%2?"even":""}">
+      <td style="color:#9E80AE;font-size:13px">${s.date||""}</td>
+      <td style="font-weight:600">${s.customer||""}</td>
+      <td>${s.item||""}</td>
+      <td style="font-weight:700;color:#7AAE8E">${euro(s.amount)}</td>
+      <td>${badge(s.status)}</td>
+      <td><button class="td-del" onclick="del('sales','${s._key}')">🗑</button></td>
+    </tr>`).join("") || '<tr><td colspan="6" style="text-align:center;color:#9E80AE;padding:24px">No sales yet</td></tr>';
+  document.getElementById("sales-total").textContent = euro(paid);
+  document.getElementById("sales-mob").innerHTML = data.sales.map(s=>`
+    <div class="mob-card">
+      <div class="mob-card-top"><div class="mob-card-name">${s.customer||""}</div><div class="mob-card-amount" style="color:#7AAE8E">${euro(s.amount)}</div></div>
+      <div class="mob-card-item">${s.item||""}</div>
+      <div class="mob-card-bottom"><div class="mob-card-date">${s.date||""}</div>
+      <div style="display:flex;align-items:center;gap:8px">${badge(s.status)}<button class="td-del" onclick="del('sales','${s._key}')">🗑</button></div></div>
+    </div>`).join("")+`<div class="mob-total"><span class="mob-total-label">Total Paid</span><span class="mob-total-val" style="color:#7AAE8E">${euro(paid)}</span></div>`;
+}
+
+function renderSpends(){
+  const te = data.spends.reduce((a,s)=>a+(+s.amount),0);
+  document.getElementById("cat-pills").innerHTML = SPEND_CATS.filter(c=>data.spends.some(s=>s.category===c)).map(c=>{
+    const tot=data.spends.filter(s=>s.category===c).reduce((a,s)=>a+(+s.amount),0);
+    return`<div class="cat-pill"><div class="cat-pill-label">${c}</div><div class="cat-pill-val">${euro(tot)}</div></div>`;
+  }).join("");
+  document.getElementById("spends-body").innerHTML = data.spends.map((s,i)=>`
+    <tr class="${i%2?"even":""}">
+      <td style="color:#9E80AE;font-size:13px">${s.date||""}</td>
+      <td><span class="cat-tag">${s.category||""}</span></td>
+      <td>${s.description||""}</td>
+      <td style="font-weight:700;color:#C97898">${euro(s.amount)}</td>
+      <td><button class="td-del" onclick="del('spends','${s._key}')">🗑</button></td>
+    </tr>`).join("") || '<tr><td colspan="5" style="text-align:center;color:#9E80AE;padding:24px">No spends yet</td></tr>';
+  document.getElementById("spends-total").textContent = euro(te);
+  document.getElementById("spends-mob").innerHTML = data.spends.map(s=>`
+    <div class="mob-card">
+      <div class="mob-card-top"><div class="mob-card-name">${s.description||s.category||""}</div><div class="mob-card-amount" style="color:#C97898">${euro(s.amount)}</div></div>
+      <div class="mob-card-item"><span class="cat-tag">${s.category||""}</span></div>
+      <div class="mob-card-bottom" style="margin-top:8px"><div class="mob-card-date">${s.date||""}</div>
+      <button class="td-del" onclick="del('spends','${s._key}')">🗑</button></div>
+    </div>`).join("")+`<div class="mob-total"><span class="mob-total-label">Total Spent</span><span class="mob-total-val" style="color:#C97898">${euro(te)}</span></div>`;
+}
+
+function renderCustomers(){
+  document.getElementById("customer-grid").innerHTML = data.customers.map(c=>`
+    <div class="cust-card">
+      <button class="abs-del" onclick="del('customers','${c._key}')">🗑</button>
+      <div class="avatar">${initials(c.name)}</div>
+      <div class="cust-name">${c.name||""}</div>
+      <div class="cust-info">${c.email||""}</div>
+      <div class="cust-info" style="margin-bottom:10px">${c.phone||""}</div>
+      ${c.notes?`<div class="cust-note">"${c.notes}"</div>`:""}
+      <div class="cust-stats">
+        <div><div class="stat-label">Orders</div><div class="stat-val-purple">${c.orders||0}</div></div>
+        <div><div class="stat-label">Spent</div><div class="stat-val-green">${euro(c.totalSpend||0)}</div></div>
+      </div>
+    </div>`).join("") || '<p style="color:#9E80AE;font-size:14px">No customers yet</p>';
+}
+
+function renderOrders(){
+  document.getElementById("order-grid").innerHTML = data.orders.map(o=>`
+    <div class="order-card" style="border-left:5px solid ${bc(o.status)}">
+      <div class="order-top"><div class="order-customer">${o.customer||""}</div>${badge(o.status)}</div>
+      <div class="order-item">${o.item||""}</div>
+      <div class="order-due">📅 Due: ${o.dueDate||"TBC"}</div>
+      ${o.notes?`<div class="order-note">${o.notes}</div>`:""}
+      <div class="order-actions">
+        <button class="btn ghost small" onclick="editOrder('${o._key}')">Edit</button>
+        <select onchange="updateStatus('${o._key}',this.value)">
+          ${ORDER_STATUSES.map(s=>`<option value="${s}"${s===o.status?" selected":""}>${statusInfo(s).label}</option>`).join("")}
+        </select>
+        <button class="td-del" onclick="del('orders','${o._key}')">🗑</button>
+      </div>
+    </div>`).join("") || '<p style="color:#9E80AE;font-size:14px">No orders yet</p>';
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────
+async function del(type, key){
+  if(!confirm("Delete this item?")) return;
+  await fbDelete(type+"/"+key);
+  data[type] = data[type].filter(x=>x._key!==key);
+  render(); toast("Deleted ✓");
+}
+
+async function updateStatus(key, val){
+  await fbPatch("orders/"+key, {status:val});
+  data.orders = data.orders.map(o=>o._key===key?{...o,status:val}:o);
+  render(); toast("Updated ✓");
+}
+
+// ── MODALS ───────────────────────────────────────────────────
+let editKey = null;
+
+function openModal(type){
+  editKey = null;
+  document.getElementById("modal-overlay").classList.add("open");
+  const T = document.getElementById("modal-title");
+  const B = document.getElementById("modal-body");
+  if(type==="sale"){
+    T.textContent="Record a Sale";
+    B.innerHTML=`
+      <div class="field"><label>Date</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Customer</label><input id="f-customer" placeholder="e.g. Emma Walsh"></div>
+      <div class="field"><label>Item / Description</label><input id="f-item" placeholder="e.g. Wildflower Print A3"></div>
+      <div class="field"><label>Amount (€)</label><input type="number" id="f-amount" placeholder="0.00" step="0.01"></div>
+      <div class="field"><label>Status</label><select id="f-status"><option value="pending">Pending</option><option value="paid">Paid</option></select></div>
+      <div class="modal-btns"><button class="btn" onclick="saveSale()">Save Sale</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="spend"){
+    T.textContent="Record a Spend";
+    B.innerHTML=`
+      <div class="field"><label>Date</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Category</label><select id="f-cat"><option value="">Select…</option>${SPEND_CATS.map(c=>`<option>${c}</option>`).join("")}</select></div>
+      <div class="field"><label>Description</label><input id="f-desc" placeholder="e.g. Watercolour paper"></div>
+      <div class="field"><label>Amount (€)</label><input type="number" id="f-amount" placeholder="0.00" step="0.01"></div>
+      <div class="modal-btns"><button class="btn" onclick="saveSpend()">Save Spend</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="customer"){
+    T.textContent="Add Customer";
+    B.innerHTML=`
+      <div class="field"><label>Full Name</label><input id="f-name" placeholder="e.g. Emma Walsh"></div>
+      <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="email@example.com"></div>
+      <div class="field"><label>Phone</label><input id="f-phone" placeholder="087 xxx xxxx"></div>
+      <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Preferences, source, etc."></textarea></div>
+      <div class="modal-btns"><button class="btn" onclick="saveCustomer()">Add Customer</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+  } else if(type==="order"){
+    T.textContent="New Order";
+    B.innerHTML=orderForm(null);
+  }
+}
+
+function editOrder(key){
+  const o = data.orders.find(x=>x._key===key);
+  if(!o) return;
+  editKey = key;
+  document.getElementById("modal-title").textContent = "Edit Order";
+  document.getElementById("modal-body").innerHTML = orderForm(o);
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function orderForm(o){
+  return`
+    <div class="field"><label>Customer</label><input id="f-customer" placeholder="e.g. Sarah Brennan" value="${o?o.customer:""}"></div>
+    <div class="field"><label>Item / Description</label><input id="f-item" placeholder="e.g. Custom Portrait" value="${o?o.item:""}"></div>
+    <div class="field"><label>Due Date</label><input type="date" id="f-due" value="${o?o.dueDate:""}"></div>
+    <div class="field"><label>Status</label><select id="f-status">${ORDER_STATUSES.map(s=>`<option value="${s}"${o&&o.status===s?" selected":""}>${statusInfo(s).label}</option>`).join("")}</select></div>
+    <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="Size, frame, special requests…">${o?o.notes:""}</textarea></div>
+    <div class="modal-btns"><button class="btn" onclick="saveOrder()">${editKey?"Save Changes":"Add Order"}</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`;
+}
+
+function closeModal(){ document.getElementById("modal-overlay").classList.remove("open"); editKey=null; }
+
+async function saveSale(){
+  if(!gv("f-customer")||!gv("f-amount")) return alert("Please fill in customer and amount.");
+  const obj = {id:Date.now(), date:gv("f-date"), customer:gv("f-customer"), item:gv("f-item"), amount:+gv("f-amount"), status:gv("f-status")||"pending"};
+  toast("Saving…");
+  const res = await fbPost("sales", obj);
+  data.sales.unshift({...obj, _key:res.name});
+  closeModal(); render(); toast("Sale saved ✓");
+}
+
+async function saveSpend(){
+  if(!gv("f-cat")||!gv("f-amount")) return alert("Please fill in category and amount.");
+  const obj = {id:Date.now(), date:gv("f-date"), category:gv("f-cat"), description:gv("f-desc"), amount:+gv("f-amount")};
+  toast("Saving…");
+  const res = await fbPost("spends", obj);
+  data.spends.unshift({...obj, _key:res.name});
+  closeModal(); render(); toast("Spend saved ✓");
+}
+
+async function saveCustomer(){
+  if(!gv("f-name")) return alert("Please enter a name.");
+  const obj = {id:Date.now(), name:gv("f-name"), email:gv("f-email"), phone:gv("f-phone"), orders:0, totalSpend:0, notes:gv("f-notes")};
+  toast("Saving…");
+  const res = await fbPost("customers", obj);
+  data.customers.unshift({...obj, _key:res.name});
+  closeModal(); render(); toast("Customer added ✓");
+}
+
+async function saveOrder(){
+  if(!gv("f-customer")||!gv("f-item")) return alert("Please fill in customer and item.");
+  const obj = {id:Date.now(), customer:gv("f-customer"), item:gv("f-item"), dueDate:gv("f-due"), status:gv("f-status")||"pending", notes:gv("f-notes")};
+  toast("Saving…");
+  if(editKey){
+    await fbPatch("orders/"+editKey, obj);
+    data.orders = data.orders.map(o=>o._key===editKey?{...obj,_key:editKey}:o);
+    toast("Order updated ✓");
+  } else {
+    const res = await fbPost("orders", obj);
+    data.orders.unshift({...obj, _key:res.name});
+    toast("Order saved ✓");
+  }
+  closeModal(); render();
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>
